@@ -1,8 +1,8 @@
 #include <iostream>
 #include <crow.h>
-#include <mysqlx/xdevapi.h>
 #include "login_handler.h"
 #include "api_handler.h"
+#include "DatabaseConnector.h"
 
 
 
@@ -16,11 +16,14 @@ int main()
 {
 	crow::SimpleApp app;
 	apiHandler apiHandler;
+	DatabaseConnector database("database.db");
+	sqlite3* db;
+	database.connect(db);
 
 	CROW_ROUTE(app, "/login")
 		.methods("GET"_method)
-		([&apiHandler](const crow::request& req) {
-		login_handler loginhandler;
+		([&apiHandler, &database](const crow::request& req) {
+		login_handler loginhandler(database);
 		return loginhandler.handleRequest(req);
 		});
 	CROW_ROUTE(app, "/get")([]() {

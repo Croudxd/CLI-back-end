@@ -24,12 +24,21 @@
     <ClCompile Include="api_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DatabaseConnector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="login_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="api_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthorizationUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DatabaseConnector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
