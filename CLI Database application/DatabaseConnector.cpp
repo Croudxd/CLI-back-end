@@ -19,6 +19,8 @@ bool DatabaseConnector::connect(sqlite3*& db)
 	if (result == SQLITE_OK)
 	{
 		std::cout << "Database connected...";
+		this->db = db;
+		//this->db = db;
 		return true;
 	}
 	else
@@ -48,6 +50,7 @@ bool DatabaseConnector::executeQuery(sqlite3_stmt* statement) const
 
 	if (result == SQLITE_DONE || result == SQLITE_ROW)
 	{
+		std::cout << "Success executing Query" << statement << std::endl;
 		return true;
 	}
 	else
