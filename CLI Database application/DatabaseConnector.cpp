@@ -47,10 +47,9 @@ bool DatabaseConnector::disconnect(sqlite3* db)
 bool DatabaseConnector::executeQuery(sqlite3_stmt* statement) const
 {
 	int result = sqlite3_step(statement);
-
 	if (result == SQLITE_DONE || result == SQLITE_ROW)
 	{
-		std::cout << "Success executing Query" << statement << std::endl;
+		std::cout << "Success executing Query" << std::endl;
 		return true;
 	}
 	else

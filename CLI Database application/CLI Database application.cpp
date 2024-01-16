@@ -27,7 +27,6 @@ int main()
 		std::cout << "Not connected to database" << std::endl;
 	}
 	
-
 	CROW_ROUTE(app, "/login")
 		.methods("GET"_method, "POST"_method)
 		([&apiHandler, &database](const crow::request& req) {
@@ -38,14 +37,15 @@ int main()
 	CROW_ROUTE(app, "/get")([]() {
 		return "Hello world";
 		});
+
 	CROW_ROUTE(app, "/delete")([]() {
 		return "Hello world";
 		});
+
 	CROW_ROUTE(app, "/put")([]() {
 		return "Hello world";
 		});
 	
-
 	app.bindaddr("localhost").port(3834).multithreaded().run();
 
 }

@@ -2,28 +2,39 @@
 #include <iostream>
 #include <openssl/rand.h>
 #include <vector>
-
+#include <jwt-cpp/jwt.h>
+#include <jwt-cpp/base.h>
+#include <random>
+#include <sstream>
+#include <iomanip>
 
 class AuthorizationUtil
 {
 public:
-	static std::string generateAuthorizationKey()
-	{
-		const int keyLength = 32;
-		std::vector<unsigned char> buffer(keyLength);
+	static auto generateAuthorizationKey(const std::string& user_id, std::string& secretKey)
+    {
+        auto token = jwt::create()
+            .set_type("JWS")
+            .set_issuer("auth0")
+            .set_payload_claim("user_id", jwt::claim(std::string("user_id")))
+            .sign(jwt::algorithm::hs256{secretKey});
 
-		if (RAND_bytes(buffer.data(), keyLength) != 1) {
-			std::cerr << "Error: Unable to generate random key." << std::endl;
-			return "";
-		}
-
-		char hexBuffer[keyLength * 2 + 1];
-		for (int i = 0; i < keyLength; i++) {
-			sprintf_s(hexBuffer + i * 2, sizeof(hexBuffer) - i * 2, "%02x", buffer[i]);
-		}
-		hexBuffer[keyLength * 2] = '\0';
-
-		return std::string(hexBuffer);
+        return token;
 	}
+
+    static std::string getSecretKey() 
+    {
+        std::random_device rd;
+        std::mt19937_64 gen(rd());
+        std::uniform_int_distribution<uint64_t> dis;
+
+        // Generate a 256-bit key (32 bytes)
+        std::ostringstream oss;
+        for (int i = 0; i < 4; ++i) {
+            oss << std::hex << std::setw(16) << std::setfill('0') << dis(gen);
+        }
+
+        return oss.str();
+    }
 private:
 };
