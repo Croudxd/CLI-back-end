@@ -14,7 +14,7 @@ login_handler::~login_handler()
 
 }
 
-crow::response login_handler::handleRequest(const crow::request& req, std::string key)
+crow::response login_handler::handleRequest(const crow::request& req, std::string& key)
 {
 	crow::json::wvalue response;
 	try {

@@ -7,7 +7,7 @@ class post_task_handler
 public:
 	post_task_handler(DatabaseConnector& database);
 	~post_task_handler();
-	crow::response handleRequest(const crow::request& req, std::string key);
+	crow::response handleRequest(const crow::request& req, std::string& key);
 private:
 	DatabaseConnector database;
 };

@@ -16,7 +16,7 @@ public:
         auto token = jwt::create()
             .set_type("JWS")
             .set_issuer("auth0")
-            .set_payload_claim("user_id", jwt::claim(std::string("user_id")))
+            .set_payload_claim("user_id", jwt::claim(user_id))
             .sign(jwt::algorithm::hs256{secretKey});
 
         return token;
@@ -26,26 +26,25 @@ public:
     {
         try {
             // Decode the access token
-            auto decoded = jwt::decode(access_key, jwt::hmac_sha256(secret_key));
+            auto decoded = jwt::decode(access_key, jwt::algorithm::hs256(secret_key));
 
             // Extract user_id from the payload
-            auto user_id_claim = decoded.get_payload_claims().find_claim("user_id");
+            auto user_id_claim = decoded.get_payload_claims().find("user_id");
             if (user_id_claim != decoded.get_payload_claims().end()) {
-                return user_id_claim->second.as_int();
+                return user_id_claim->second.as_string();
             }
             else {
                 // Handle the case where "user_id" claim is not present
                 std::cerr << "Error: 'user_id' claim not found in the access token." << std::endl;
-                return -1; // or some appropriate error value
+                return ""; // or some appropriate error value
             }
         }
         catch (const std::exception& e) {
             // Handle decoding errors
             std::cerr << "Error decoding access token: " << e.what() << std::endl;
-            return -1; // or some appropriate error value
+            return ""; // or some appropriate error value
         }
     }
-
     static std::string generateSecretKey() 
     {
         std::random_device rd;

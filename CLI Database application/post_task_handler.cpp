@@ -1,6 +1,7 @@
 #include "post_task_handler.h"
 #include "DatabaseConnector.h"
 #include <crow.h>
+#include "AuthorizationUtil.h"
 
 post_task_handler::post_task_handler(DatabaseConnector& database) : database(database)
 {
@@ -12,7 +13,7 @@ post_task_handler::~post_task_handler()
 }
 
 
-crow::response post_task_handler::handleRequest(const crow::request& req, std::string key)
+crow::response post_task_handler::handleRequest(const crow::request& req, std::string& key)
 {
 	crow::json::wvalue response;
 	try {
@@ -24,11 +25,10 @@ crow::response post_task_handler::handleRequest(const crow::request& req, std::s
 		}
 		std::string task_name = jsonBody["task_name"].s();
 		std::string task_description = jsonBody["task_description"].s();
-		int user_id; //save header and decode the access token.
-		user_id = 1;
-		//once decoded i need to check the database to see if the user_id matches. If it matches continue.
-		database.checkUserID(user_id);
-		std::string query = "INSERT INTO tasks"; //Get query ready.
+		auto access_key = req.get_header_value("access_token");
+		std::string user_id = AuthorizationUtil::decodeAuthorizationKey(access_key, key);
+		database.checkUserID(stoi(user_id));
+		std::string query = "INSERT INTO tasks WHERE task_name = ? AND task_description = ?"; //Get query ready.
 		
 
 		sqlite3_stmt* statement;

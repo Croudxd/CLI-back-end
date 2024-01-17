@@ -7,7 +7,7 @@ class login_handler {
 public:
 	login_handler(DatabaseConnector& database);
 	~login_handler();
-	crow::response handleRequest(const crow::request& req, std::string key);
+	crow::response handleRequest(const crow::request& req, std::string& key);
 private:
 	DatabaseConnector database;
 };

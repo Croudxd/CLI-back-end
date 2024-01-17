@@ -4,6 +4,7 @@
 #include "api_handler.h"
 #include "DatabaseConnector.h"
 #include "AuthorizationUtil.h"
+#include "post_task_handler.h"
 
 
 
@@ -19,7 +20,7 @@ int main()
 	apiHandler apiHandler;
 	DatabaseConnector database("database.db");
 	sqlite3* db;
-	std::string key = AuthorizationUtil::generateSecretKey()
+	std::string key = AuthorizationUtil::generateSecretKey();
 	if (database.connect(db))
 	{
 		std::cout << "connected to database!" << std::endl;
@@ -31,9 +32,9 @@ int main()
 	
 	CROW_ROUTE(app, "/login")
 		.methods("GET"_method, "POST"_method)
-		([&apiHandler, &database](const crow::request& req) {
+		([&apiHandler, &database, &key](const crow::request& req) {
 		login_handler loginhandler(database);
-		return loginhandler.handleRequest(req);
+		return loginhandler.handleRequest(req, key);
 		});
 
 	CROW_ROUTE(app, "/get")([]() {
@@ -44,8 +45,11 @@ int main()
 		return "Hello world";
 		});
 
-	CROW_ROUTE(app, "/put")([]() {
-		return "Hello world";
+	CROW_ROUTE(app, "/post")
+		.methods("POST"_method)
+		([&apiHandler, &database, &key](const crow::request& req) {
+		post_task_handler postHandler(database);
+		return postHandler.handleRequest(req, key);
 		});
 	
 	app.bindaddr("localhost").port(3834).multithreaded().run();
