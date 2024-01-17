@@ -1,12 +1,12 @@
 #pragma once
-#include <crow.h>
-#include <mysqlx/xdevapi.h>
 #include "DatabaseConnector.h"
+#include <crow.h>
 
-class login_handler {
+class post_task_handler 
+{
 public:
-	login_handler(DatabaseConnector& database);
-	~login_handler();
+	post_task_handler(DatabaseConnector& database);
+	~post_task_handler();
 	crow::response handleRequest(const crow::request& req, std::string key);
 private:
 	DatabaseConnector database;

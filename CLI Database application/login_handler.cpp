@@ -14,7 +14,7 @@ login_handler::~login_handler()
 
 }
 
-crow::response login_handler::handleRequest(const crow::request& req)
+crow::response login_handler::handleRequest(const crow::request& req, std::string key)
 {
 	crow::json::wvalue response;
 	try {
@@ -41,8 +41,6 @@ crow::response login_handler::handleRequest(const crow::request& req)
 				if (stepResult == SQLITE_ROW)
 				{
 					int user_id = sqlite3_column_int(statement, 0);
-
-					std::string key = AuthorizationUtil::getSecretKey();
 					std::string access_token = AuthorizationUtil::generateAuthorizationKey(std::to_string(user_id), key);
 					response["success"] = true;
 					response["access_token"] = access_token;

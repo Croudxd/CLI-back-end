@@ -22,7 +22,31 @@ public:
         return token;
 	}
 
-    static std::string getSecretKey() 
+    static auto decodeAuthorizationKey(const std::string& access_key, std::string secret_key)
+    {
+        try {
+            // Decode the access token
+            auto decoded = jwt::decode(access_key, jwt::hmac_sha256(secret_key));
+
+            // Extract user_id from the payload
+            auto user_id_claim = decoded.get_payload_claims().find_claim("user_id");
+            if (user_id_claim != decoded.get_payload_claims().end()) {
+                return user_id_claim->second.as_int();
+            }
+            else {
+                // Handle the case where "user_id" claim is not present
+                std::cerr << "Error: 'user_id' claim not found in the access token." << std::endl;
+                return -1; // or some appropriate error value
+            }
+        }
+        catch (const std::exception& e) {
+            // Handle decoding errors
+            std::cerr << "Error decoding access token: " << e.what() << std::endl;
+            return -1; // or some appropriate error value
+        }
+    }
+
+    static std::string generateSecretKey() 
     {
         std::random_device rd;
         std::mt19937_64 gen(rd());

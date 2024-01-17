@@ -3,6 +3,7 @@
 #include "login_handler.h"
 #include "api_handler.h"
 #include "DatabaseConnector.h"
+#include "AuthorizationUtil.h"
 
 
 
@@ -18,6 +19,7 @@ int main()
 	apiHandler apiHandler;
 	DatabaseConnector database("database.db");
 	sqlite3* db;
+	std::string key = AuthorizationUtil::generateSecretKey()
 	if (database.connect(db))
 	{
 		std::cout << "connected to database!" << std::endl;

@@ -13,6 +13,7 @@ public:
 	bool disconnect(sqlite3* db);
 	bool executeQuery(sqlite3_stmt* statement) const;
 	sqlite3* getDb();
+	bool checkUserID(int user_id);
 
 private:
 	std::string dbname;

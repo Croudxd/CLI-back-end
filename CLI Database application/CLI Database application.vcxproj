@@ -131,12 +131,14 @@
     <ClCompile Include="CLI Database application.cpp" />
     <ClCompile Include="DatabaseConnector.cpp" />
     <ClCompile Include="login_handler.cpp" />
+    <ClCompile Include="post_task_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api_handler.h" />
     <ClInclude Include="AuthorizationUtil.h" />
     <ClInclude Include="DatabaseConnector.h" />
     <ClInclude Include="login_handler.h" />
+    <ClInclude Include="post_task_handler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
