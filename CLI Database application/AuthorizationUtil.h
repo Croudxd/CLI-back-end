@@ -29,9 +29,9 @@ public:
             auto decoded = jwt::decode(access_key, jwt::algorithm::hs256{ secret_key });
 
             // Extract user_id from the payload
-            auto user_id_claim = decoded.get_payload_claims().find("user_id");
-            if (user_id_claim != decoded.get_payload_claims().end()) {
-                return user_id_claim->second.as_string();
+            auto user_id_claim = decoded.get_payload_claim("user_id");
+            if (decoded.has_payload_claim("user_id")) {
+                return user_id_claim.as_string();
             }
             else {
                 // Handle the case where "user_id" claim is not present
