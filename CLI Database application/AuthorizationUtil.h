@@ -22,11 +22,11 @@ public:
         return token;
 	}
 
-    static auto decodeAuthorizationKey(const std::string& access_key, std::string secret_key)
+    static std::string decodeAuthorizationKey(const std::string& access_key, std::string secret_key)
     {
         try {
             // Decode the access token
-            auto decoded = jwt::decode(access_key, jwt::algorithm::hs256(secret_key));
+            auto decoded = jwt::decode(access_key, jwt::algorithm::hs256{ secret_key });
 
             // Extract user_id from the payload
             auto user_id_claim = decoded.get_payload_claims().find("user_id");
@@ -45,6 +45,7 @@ public:
             return ""; // or some appropriate error value
         }
     }
+
     static std::string generateSecretKey() 
     {
         std::random_device rd;
@@ -59,5 +60,4 @@ public:
 
         return oss.str();
     }
-private:
 };

@@ -12,7 +12,6 @@ post_task_handler::~post_task_handler()
 
 }
 
-
 crow::response post_task_handler::handleRequest(const crow::request& req, std::string& key)
 {
 	crow::json::wvalue response;
@@ -23,12 +22,21 @@ crow::response post_task_handler::handleRequest(const crow::request& req, std::s
 		{
 			throw::std::invalid_argument("Invalid JSON");
 		}
+
 		std::string task_name = jsonBody["task_name"].s();
 		std::string task_description = jsonBody["task_description"].s();
-		auto access_key = req.get_header_value("access_token");
+		std::string access_key = req.get_header_value("access_token");
+
 		std::string user_id = AuthorizationUtil::decodeAuthorizationKey(access_key, key);
-		database.checkUserID(stoi(user_id));
-		std::string query = "INSERT INTO tasks WHERE task_name = ? AND task_description = ?"; //Get query ready.
+
+		if (!database.checkUserID(stoi(user_id)))
+		{
+			response["success"] = false;
+			response["error_message"] = "No user id associated with token.";
+			return crow::response(response);
+		}
+
+		std::string query = "INSERT INTO tasks (task_name, task_description, user_id) VALUES (?, ?, ?)"; //Get query ready.
 		
 
 		sqlite3_stmt* statement;
@@ -38,6 +46,8 @@ crow::response post_task_handler::handleRequest(const crow::request& req, std::s
 		{
 			sqlite3_bind_text(statement, 1, task_name.c_str(), -1, SQLITE_STATIC);
 			sqlite3_bind_text(statement, 2, task_description.c_str(), -1, SQLITE_STATIC);
+			sqlite3_bind_text(statement, 3, user_id.c_str(), -1, SQLITE_STATIC);
+
 
 			if (database.executeQuery(statement))
 			{
@@ -64,7 +74,7 @@ crow::response post_task_handler::handleRequest(const crow::request& req, std::s
 	catch (const std::exception& e)
 	{
 		response["success"] = false;
-		response["error_message"] = e.what();
+		response["error_message"] = typeid(e).name() + std::string(": ") + e.what();
 	}
 
 	return crow::response(response);
