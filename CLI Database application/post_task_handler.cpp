@@ -53,7 +53,7 @@ crow::response post_task_handler::handleRequest(const crow::request& req, std::s
 			{
 				sqlite3_reset(statement);
 				int stepResult = sqlite3_step(statement);
-				response["success"] = true;
+				response["success"] = "true";
 			}
 			else
 			{

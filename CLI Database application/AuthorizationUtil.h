@@ -25,26 +25,30 @@ public:
     static std::string decodeAuthorizationKey(const std::string& access_key, std::string secret_key)
     {
         try {
-            // Decode the access token
-            auto decoded = jwt::decode(access_key, jwt::algorithm::hs256{ secret_key });
+            // Decode the JWT
+            auto decodedToken = jwt::decode(access_key);
 
-            // Extract user_id from the payload
-            auto user_id_claim = decoded.get_payload_claim("user_id");
-            if (decoded.has_payload_claim("user_id")) {
-                return user_id_claim.as_string();
+            // Verify the JWT
+            jwt::verify()
+                .allow_algorithm(jwt::algorithm::hs256(secret_key))
+                .with_issuer("auth0")  // Replace with your expected issuer
+                .verify(decodedToken);
+
+            // Access the ID from the decoded JWT
+            auto userIDClaim = decodedToken.get_payload_claim("user_id");// Assuming subject contains the ID
+            if (userIDClaim.get_type() == jwt::json::type::string)
+            {
+
+                return userIDClaim.as_string();
             }
-            else {
-                // Handle the case where "user_id" claim is not present
-                std::cerr << "Error: 'user_id' claim not found in the access token." << std::endl;
-                return ""; // or some appropriate error value
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Error verifying/decoding JWT: " << e.what() << std::endl;
+                return ""; // Return an empty string or handle error accordingly
             }
         }
-        catch (const std::exception& e) {
-            // Handle decoding errors
-            std::cerr << "Error decoding access token: " << e.what() << std::endl;
-            return ""; // or some appropriate error value
-        }
-    }
+    
+
 
     static std::string generateSecretKey() 
     {
