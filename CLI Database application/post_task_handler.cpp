@@ -54,8 +54,8 @@ crow::response post_task_handler::handleRequest(const crow::request& req, std::s
 
 			if (database.executeQuery(statement))
 			{
-				sqlite3_reset(statement);
-				int stepResult = sqlite3_step(statement);
+				/*sqlite3_reset(statement);
+				int stepResult = sqlite3_step(statement);*/
 				std::cout << "query success";
 				response["success"] = true;
 			}
