@@ -45,7 +45,7 @@ int main()
 		return "Hello world";
 		});
 
-	CROW_ROUTE(app, "/post")
+	CROW_ROUTE(app, "/addtask")
 		.methods("POST"_method)
 		([&apiHandler, &database, &key](const crow::request& req) {
 		post_task_handler postHandler(database);
