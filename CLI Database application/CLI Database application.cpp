@@ -5,6 +5,8 @@
 #include "DatabaseConnector.h"
 #include "AuthorizationUtil.h"
 #include "post_task_handler.h"
+#include "post_payment_handler.h"
+#include "refresh_payments_handler.h"
 
 
 
@@ -51,7 +53,21 @@ int main()
 		post_task_handler postHandler(database);
 		return postHandler.handleRequest(req, key);
 		});
-	
+
+	/*CROW_ROUTE(app, "/add_payment")
+		.methods("POST"_method)
+		([&apiHandler, &database, &key](const crow::request& req) {
+		post_payment_handler postHandler(database);
+		return postHandler.handleRequest(req, key);
+			});
+
+	CROW_ROUTE(app, "/refresh_payments")
+		.methods("GET"_method)
+		([&apiHandler, &database, &key](const crow::request& req) {
+		refresh_payments_handler refreshHandler(database);
+		return refreshHandler.handleRequest(req, key);
+			});
+	*/
 	app.bindaddr("localhost").port(3834).multithreaded().run();
 
 }
