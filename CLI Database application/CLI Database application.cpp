@@ -54,7 +54,7 @@ int main()
 		return postHandler.handleRequest(req, key);
 		});
 
-	/*CROW_ROUTE(app, "/add_payment")
+	CROW_ROUTE(app, "/add_payment")
 		.methods("POST"_method)
 		([&apiHandler, &database, &key](const crow::request& req) {
 		post_payment_handler postHandler(database);
@@ -67,7 +67,7 @@ int main()
 		refresh_payments_handler refreshHandler(database);
 		return refreshHandler.handleRequest(req, key);
 			});
-	*/
+	
 	app.bindaddr("localhost").port(3834).multithreaded().run();
 
 }
